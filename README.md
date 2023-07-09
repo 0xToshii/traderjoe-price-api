@@ -12,7 +12,7 @@ This Trader Joe Price Feed API is intended to be used to get the prices of v1, v
     2. `FACTORY_V1`: Address of the TraderJoe V1 factory (0xaE4EC9901c3076D0DdBe76A520F9E90a6227aCB7)
     3. `FACTORY_V2`: Address of the TraderJoe V2 factory (0x1886D09C9Ade0c5DB822D85D21678Db67B6c2982)
     4. `FACTORY_V2_1`: Address of the TraderJoe V2_1 factory (0x8e42f2F4101563bF679975178e880FD87d3eFd4e)
-    5. `MULTICALL`: address of the multicall contract (0x842eC2c7D803033Edf55E478F461FC547Bc54EB2)
+    5. `MULTICALL`: Address of the Multicall contract (0x842eC2c7D803033Edf55E478F461FC547Bc54EB2)
 3. Start the API by running the following: `uvicorn price_feed:app --host 0.0.0.0 --port 8443`
 
 ## API Definition
