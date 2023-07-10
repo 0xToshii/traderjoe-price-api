@@ -2,13 +2,13 @@
 
 ## Description
 
-This Trader Joe Price Feed API is intended to be used to get the prices of v1, v2, and v2_1 pools on Arbitrum. It is written in python and primarily utilizes the Web3py and FastAPI packages. Prices are only returned for pools in which (for v1) there is more than 100 USD in liquidity, or (for v2 and v2_1) for each of the +/- 5 closest bins to the active bin, there is at least 10 USD in liquidity. If these conditions are not met, then the price returned will be -1. If any of the pools requested do not exist, then the API will return an error. To save on RPC calls, most functionality is wrapped using Multicall. USD prices for assets are gathered using Chainlink price feeds.
+This Trader Joe Price Feed API is intended to be used to get the prices of v1, v2, and v2_1 pools on Arbitrum. It is written in python and primarily utilizes the Web3py and FastAPI packages. Prices are only returned for pools in which (for v1) there is more than 100 USD in liquidity, or (for v2 and v2_1) for each of the +/- 5 closest bins to the active bin, there is at least 10 USD in liquidity. If these conditions are not met, then the price returned will be -1. If any of the pools requested do not exist or the addresses are improperly formatted, then the API will return an error. To save on RPC calls, most functionality is wrapped using Multicall. USD prices for assets are gathered using Chainlink price feeds.
 
 ## Usage
 
 1. Install `requirements.txt` using a virtual environment.
 2. In `.env` define the following: 
-    1. `RPC`: RPC endpoint for Arbitrum, 
+    1. `RPC`: RPC endpoint for Arbitrum
     2. `FACTORY_V1`: Address of the TraderJoe V1 factory (0xaE4EC9901c3076D0DdBe76A520F9E90a6227aCB7)
     3. `FACTORY_V2`: Address of the TraderJoe V2 factory (0x1886D09C9Ade0c5DB822D85D21678Db67B6c2982)
     4. `FACTORY_V2_1`: Address of the TraderJoe V2_1 factory (0x8e42f2F4101563bF679975178e880FD87d3eFd4e)
@@ -39,8 +39,33 @@ requests.get(endpoint)
 
 # multi-pair POST v1 request
 endpoint = "http://0.0.0.0:8443/v1/batch-prices"
-data = json.dumps({'base_assets':[USDC_e,wETH],'quote_assets':[wETH,USDC]})
+data = json.dumps({'base_assets':[USDC_e,wETH],'quote_assets':[wETH,USDC_e]})
 requests.post(endpoint,data=data)
+
+bin_step = 15
+
+# single pair GET v2 request
+endpoint = "http://0.0.0.0:8443/v2/prices/{}/{}/{}".format(USDC_e,wETH,bin_step)
+requests.get(endpoint)
+
+# multi-pair POST v2 request
+endpoint = "http://0.0.0.0:8443/v2/batch-prices"
+data = json.dumps({'base_assets':[USDC_e,wETH],
+                   'quote_assets':[wETH,USDC_e],
+                   'bin_steps':[bin_step,bin_step]})
+requests.post(endpoint,data=data)
+```
+
+Example output - success
+
+```python
+{"status":"SUCCESS","output":[1.8567736583186559e-09,538568605.5593438]}
+```
+
+Example output - error
+
+```python
+{"status":"ERROR","output":"Asset addresses are incorrectly formatted."}
 ```
 
 ## Performance
